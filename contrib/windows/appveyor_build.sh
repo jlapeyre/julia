@@ -100,6 +100,9 @@ for i in bin/*.dll; do
 done
 for i in share/julia/base/pcre_h.jl; do
   $SEVENZIP e -y julia-installer.exe "$i" -obase >> get-deps.log
+  # Touch the file to adjust the modification time, thereby (hopefully) avoiding
+  # issues with clock skew during the build
+  touch "base/$(basename $i)"
 done
 echo "override PCRE_INCL_PATH =" >> Make.user
 # Remove libjulia.dll if it was copied from downloaded binary
