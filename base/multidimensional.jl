@@ -649,7 +649,10 @@ end
         D = eachindex(dest)
         Dy = iterate(D)
         @inbounds @nloops $N j d->I[d] begin
-            (idx, state) = Dy::Tuple
+            # This condition is never hit, but at the moment
+            # the optimizer is not clever enough to split the union without it
+            Dy === nothing && return dest
+            (idx, state) = Dy
             dest[idx] = @ncall $N getindex src j
             Dy = iterate(D, state)
         end
